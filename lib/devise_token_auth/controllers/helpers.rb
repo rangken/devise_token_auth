@@ -96,26 +96,35 @@ module DeviseTokenAuth
       #     before_filter :authenticate_admin! # Tell devise to use :admin map
       #
       def self.define_helpers(mapping) #:nodoc:
-        mapping = mapping.name
 
-        class_eval <<-METHODS, __FILE__, __LINE__ + 1
+        # mapping = mapping.name
 
-          def #{mapping}_signed_in?
-            !!current_#{mapping}
-          end
+        # class_eval <<-METHODS, __FILE__, __LINE__ + 1
+        #   def authenticate_#{mapping}!
+        #     unless current_#{mapping}
+        #       return render json: {
+        #         errors: ["Authorized users only."]
+        #       }, status: 401
+        #     end
+        #   end
 
-          def current_#{mapping}
-            @current_#{mapping} ||= set_user_by_token(:#{mapping})
-          end
+        #   def #{mapping}_signed_in?
+        #     !!current_#{mapping}
+        #   end
 
-          def #{mapping}_session
-            current_#{mapping} && warden.session(:#{mapping})
-          end
-        METHODS
+        #   def current_#{mapping}
+        #     @current_#{mapping} ||= set_user_by_token(:#{mapping})
+        #   end
 
-        ActiveSupport.on_load(:action_controller) do
-          helper_method "current_#{mapping}", "#{mapping}_signed_in?", "#{mapping}_session"
-        end
+        #   def #{mapping}_session
+        #     current_#{mapping} && warden.session(:#{mapping})
+        #   end
+        # METHODS
+
+        # ActiveSupport.on_load(:action_controller) do
+        #   helper_method "current_#{mapping}", "#{mapping}_signed_in?", "#{mapping}_session"
+        # end
+
       end
     end
   end

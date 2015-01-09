@@ -99,31 +99,31 @@ module DeviseTokenAuth
 
         # mapping = mapping.name
 
-        # class_eval <<-METHODS, __FILE__, __LINE__ + 1
-        #   def authenticate_#{mapping}!
-        #     unless current_#{mapping}
-        #       return render json: {
-        #         errors: ["Authorized users only."]
-        #       }, status: 401
-        #     end
-        #   end
+        class_eval <<-METHODS, __FILE__, __LINE__ + 1
+          def authenticate_user!
+            unless current_usre
+              return render json: {
+                errors: ["Authorized users only."]
+              }, status: 401
+            end
+          end
 
-        #   def #{mapping}_signed_in?
-        #     !!current_#{mapping}
-        #   end
+          def user_signed_in?
+            !!current_user
+          end
 
-        #   def current_#{mapping}
-        #     @current_#{mapping} ||= set_user_by_token(:#{mapping})
-        #   end
+          def current_user
+            @current_#{mapping} ||= set_user_by_token(:#{mapping})
+          end
 
-        #   def #{mapping}_session
-        #     current_#{mapping} && warden.session(:#{mapping})
-        #   end
-        # METHODS
+          def user_session
+            current_#{mapping} && warden.session(:#{mapping})
+          end
+        METHODS
 
-        # ActiveSupport.on_load(:action_controller) do
-        #   helper_method "current_#{mapping}", "#{mapping}_signed_in?", "#{mapping}_session"
-        # end
+        ActiveSupport.on_load(:action_controller) do
+          helper_method "current_user", "user_signed_in?", "user_session"
+        end
 
       end
     end
